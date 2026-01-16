@@ -1,0 +1,45 @@
+How to set up rclone for DDPC GlobalStorage Nextcloud
+-----------------------------------------------------
+
+In a browser:
+    1. Log into https://nextcloud-dcc-fi-csc-okd-globalstorage1.2.rahtiapp.fi/
+        * Use LISA Mission Directory credentials
+
+    2. Go to User > Settings > Security
+
+    3. Under "Devices & sessions", there is a field called "App name". Create a new app called "rclone".
+
+    4. Click "Create new app password"
+
+    5. Save the automatically generated password somewhere temporary
+
+Locally:
+    1. If you have not yet set up `rclone`, create a new config file by running
+        ```
+        > rclone config
+        ```
+
+    2. Find it with
+        ```
+        > rclone config file
+        ```
+
+    3. Open that file in an editor, and add a section like so:
+       ```
+        [globalstorage1]
+        type = webdav
+        url
+= https://nextcloud-dcc-fi-csc-okd-globalstorage1.2.rahtiapp.fi/remote.php/dav/files/<LMD_ACCOUNT_NAME>/
+        vendor = nextcloud
+        bearer_token = <PASSWORD_CREATED_IN_BROWSER>
+        nextcloud_chunk_size = 0M
+       ```
+
+    Note the two fields to be filled in, in the `url` and `bearer_token` lines
+
+    4. Now, to download, follow the `rclone` documentation. Here are the
+       recommended settings for the brickmarket:
+
+         ```
+	> rclone copy --checksum --timeout 120m -vv globalstorage1:/brickmarket/path/to/data path/to/local/directory
+	```
